@@ -25,7 +25,7 @@ public class TestWrike{
         driver.manage().window().maximize();
 
         WebElement getJoinButton = driver.findElement(By.xpath(".//div[@class=\"r\"]/form/" +
-                "button[@class=\"wg-header__free-trial-button wg-btn wg-btn--green\"]"));
+        "button[@class=\"wg-header__free-trial-button wg-btn wg-btn--green\"]"));
         getJoinButton.click();
 
         String handle = driver.getWindowHandle();
