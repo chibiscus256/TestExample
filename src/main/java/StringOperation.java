@@ -1,4 +1,5 @@
 import java.security.SecureRandom;
+import java.util.Random;
 
 public class StringOperation{
     private static final String ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_";
@@ -16,5 +17,12 @@ public class StringOperation{
             sb.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
         }
         return sb.toString();
+    }
+
+    protected static String getRandomNumber(int startNum, int endNum) {
+        Random random = new Random();
+        int outNum = startNum + random.nextInt(endNum - startNum + 1);
+        return Integer.toString(outNum);
+
     }
 }
