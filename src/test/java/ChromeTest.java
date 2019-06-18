@@ -8,7 +8,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class ChromeTest {
 
-    private WebDriver driver;
+    WebDriver driver;
 
     @BeforeClass
     public static void setupClass() {
@@ -30,12 +30,10 @@ public class ChromeTest {
     @Test
     public void test() {
         MainPage mainPage = new MainPage(driver);
-        mainPage.init(driver);
         mainPage.getMainPage();
         mainPage.createAnAccount();
 
-        QASectionPage qaSectionPage = new QASectionPage();
-        qaSectionPage.init(driver);
+        QASectionPage qaSectionPage = new QASectionPage(driver);
         qaSectionPage.waitForLoading();
         qaSectionPage.fillTheForm();
         qaSectionPage.resendResult();
