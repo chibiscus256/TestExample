@@ -39,5 +39,4 @@ public class ChromeTest {
         qaSectionPage.resendResult();
         qaSectionPage.followUsOn("twitter");
     }
-
 }

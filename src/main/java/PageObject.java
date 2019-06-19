@@ -1,33 +1,30 @@
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.After;
-import org.junit.Before;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static junit.framework.Assert.assertEquals;
-import static org.openqa.selenium.support.PageFactory.*;
 
 class PageObject {
-    private static String driverPath = "";
-    WebDriver driver;
     WebDriverWait wait;
-    String pageURL = "https://www.wrike.com";
+    WebDriver driver;
+    String pageURL;
+
 
     PageObject(WebDriver driver){
         this.driver = driver;
-        //this.wait = new WebDriverWait(driver, 10);
+        wait = new WebDriverWait(driver, 10);
+        this.pageURL = "https://www.wrike.com/";
+        init(driver);
     }
 
     PageObject() {
     }
 
     void getMainPage(){
-        String mainPage = "https://www.wrike.com";
+        String mainPage = "https://www.wrike.com/";
         driver.get(mainPage);
         driver.manage().window().maximize();
     }
@@ -39,25 +36,33 @@ class PageObject {
 
     void waitForLoading(){
         try{
-            wait.until(ExpectedConditions.urlMatches(pageURL));
+            wait.until(ExpectedConditions.urlMatches(this.pageURL));
         }catch(RuntimeException e){
             System.err.println("runtime exceeded");
         }
-        assertEquals(pageURL, driver.getCurrentUrl());
+        assertEquals(this.pageURL, driver.getCurrentUrl());
     }
 
-    static WebDriver initChromeDriver(){
-        WebDriverManager.chromedriver().setup();
-        System.setProperty("webdriver.chrome.driver", driverPath);
-        return new ChromeDriver();
+    void waitForLoading(String URL){
+        try{
+            wait.until(ExpectedConditions.urlMatches(URL));
+        }catch(RuntimeException e){
+            System.err.println("runtime exceeded");
+        }
+        assertEquals(URL, driver.getCurrentUrl());
     }
 
+    /*Не понял, что значит проверить корректность иконки Твиттера. Метод жмет на кнопку и переходит по ссылке, проверяя
+    * соотвественно кликабельность кнопки и наличие ссылки*/
     void followUsOn(String socialNetwork){
             WebElement element = driver.findElement(By.xpath(".//a[@href=\"https://" + socialNetwork +
                     ".com/wrike\"]//ancestor::li"));
+            element.click();
+            driver.get("https://" + socialNetwork + ".com/wrike");
+            waitForLoading("https://" + socialNetwork + ".com/wrike");
             assertEquals("https://" + socialNetwork + ".com/wrike", driver.getCurrentUrl());
     }
     public void init(final WebDriver driver) {
-        initElements(driver, this);
+        PageFactory.initElements(driver, this);
     }
 }

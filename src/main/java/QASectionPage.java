@@ -2,7 +2,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
@@ -11,10 +10,8 @@ import java.util.Random;
 import static junit.framework.Assert.*;
 
 public class QASectionPage extends PageObject{
-    private final String pageURL = "https://www.wrike.com/resend/";
-    WebDriverWait wait = new WebDriverWait(driver, 10);
 
-    @FindBy(xpath = ".//span[@class=\"switch__additional\"]/input")
+    @FindBy(xpath = "//span[@class=\"switch__additional\"]/input")
     private WebElement printAnswer;
 
     @FindBy(xpath = ".//div[@class=\"wg-grid\"]/div[1]/p/button[contains(text(), 'Resend email')]")
@@ -25,26 +22,31 @@ public class QASectionPage extends PageObject{
 
     public QASectionPage(WebDriver driver) {
         super(driver);
+        this.pageURL = "https://www.wrike.com/resend/";
+        wait = new WebDriverWait(driver, 10);
+        init(driver);
     }
 
     QASectionPage() {
     }
 
-    private void fillQuestion(String keywords, boolean needText){
-        List<WebElement> answers = driver.findElements(By.xpath(".//form[@class=\"survey-form\"]//*[contains(text(), " +
-                keywords + "]/label/button"));
+    //Заполнение формы предполагается для отдельных страниц
+    private void fillQuestion(String keywords){
+        List<WebElement> answers = driver.findElements(By.xpath(".//div[@data-code=\"" + keywords + "\"]/label/button"));
         Random gen = new Random();
         WebElement answer = answers.get(gen.nextInt(answers.size()));
         answer.click();
-        if (needText) {
+        //Предполагаем, что в поле "Другое" всегда требуется ввести текст ответа
+        if (answer.getText().equals("Other")) {
             printAnswer.sendKeys(StringOperation.generateRandomString(5));
         }
     }
 
+    /*Заполняем форму, по вызову fillQuestion на один вопрос*/
     void fillTheForm(){
-        fillQuestion("interest_in_solution", false);
-        fillQuestion("team_members", false);
-        fillQuestion("primary_business", true);
+        fillQuestion("interest_in_solution");
+        fillQuestion("team_members");
+        fillQuestion("primary_business");
         submitButton.click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(".//img[@class=\"mailbox\"]")));
     }
@@ -58,5 +60,4 @@ public class QASectionPage extends PageObject{
         }
         assertFalse(resendButton.isDisplayed());
     }
-
 }
